@@ -1,23 +1,56 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from "react";
+import ShowCountries from "./ShowCountries";
+import axios from "axios";
+import "./App.css";
+
+const ShowButton = ({country}) => {
+  return <div>{country.area}</div>;
+};
 
 function App() {
+  const [search, setSearch] = useState("");
+  const [countries, setCountries] = useState([]);
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    axios
+      .get(`https://restcountries.com/v2/all`)
+      .then((response) => setCountries(response.data));
+  }, []);
+
+  const handleChange = (event) => {
+    setSearch(event.target.value);
+  };
+
+  const filterCountries = countries.filter((country) =>
+    country.name.includes(search)
+  );
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      find countries
+      <input value={search} onChange={handleChange} />
+      {filterCountries.length > 10 ? (
+        <p>Too many matches, specify another filter</p>
+      ) : filterCountries.length > 1 ? (
+        filterCountries.map((country) => (
+          <div key={country.alpha2Code}>
+            {country.name}
+            <button
+              onClick={() => setShow(true)}
+            >
+              show
+            </button>
+            {show ? (
+              <ShowButton country={country} />
+            ) : (
+              console.log("Try something else")
+            )}
+          </div>
+        ))
+      ) : (
+        <ShowCountries filterCountries={filterCountries} />
+      )}
     </div>
   );
 }
