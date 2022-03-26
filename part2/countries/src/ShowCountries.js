@@ -1,13 +1,13 @@
 import React from 'react'
 import './App.css'
 
-function ShowCountries({filterCountries}) {
+function Country({filterCountries}) {
   return (
     <div>
         {
             filterCountries.map(country => { 
                 return (
-                    <div key={country.alpha2Code}>
+                    <div key={country.name}>
                         <h1>{country.name}</h1>
                         <p>capital {country.capital}</p>
                         <p>area {country.area}</p>
@@ -22,4 +22,4 @@ function ShowCountries({filterCountries}) {
   )
 }
 
-export default ShowCountries
+export default Country
