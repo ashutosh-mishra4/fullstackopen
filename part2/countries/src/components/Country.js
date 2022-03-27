@@ -1,7 +1,11 @@
+import axios from "axios";
 import React from "react";
-import "./App.css";
+import { useEffect } from "react";
+import "../App.css";
 
-function Country({ filterCountries }) {
+function Country({ filterCountries, weather }) {
+  
+
   return (
     <main>
       {filterCountries.map((country) => {
@@ -17,6 +21,9 @@ function Country({ filterCountries }) {
               ))}
             </ul>
             <img className="flag" src={country.flags.svg} />
+            <h2>Weather for {country.capital}</h2>
+            <p>temperature -{weather.main.temp} Celcius</p>
+            <p>wind {weather.wind.speed} m/s</p>
           </section>
         );
       })}
