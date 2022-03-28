@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
-import axios from "axios";
+import contactService from './services/contact'
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -12,10 +12,8 @@ const App = () => {
   const [showSearch, setShowSearch] = useState(false);
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {setPersons(response.data)})
-
+    contactService.getAll()
+      .then(persons => {setPersons(persons)})
   }, [])
 
   const handleName = (event) => {
@@ -32,17 +30,22 @@ const App = () => {
     event.preventDefault();
   };
 
+  const newContactObject = { name: newName, number: newNumber }
+
+  // alert if name is already added otherwise add the contact
   const addNameToPersons = () => {
     if (persons.some((person) => person.name === newName)) {
       alert(`${newName} is already added to phonebook`);
     } else {
-      setPersons([...persons, { name: newName, number: newNumber }]);
+      // setPersons([...persons, { name: newName, number: newNumber }]);
+      contactService
+        .create(newContactObject)
+        .then(returnedPersons => setPersons(persons.concat(returnedPersons)))
     }
   };
 
   const handleSearch = (event) => {
     setSearch(event.target.value);
-    console.log(search);
     if (persons.some((person) => person.name === search)) {
       setShowSearch((value) => !value);
     }
