@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
-import contactService from './services/contact'
+import contactService from "./services/contact";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -12,35 +12,57 @@ const App = () => {
   const [showSearch, setShowSearch] = useState(false);
 
   useEffect(() => {
-    contactService.getAll()
-      .then(persons => {setPersons(persons)})
-  }, [])
+    contactService.getAll().then((persons) => {
+      setPersons(persons);
+    });
+  }, []);
 
   const handleName = (event) => {
     setNewName(event.target.value);
-    console.log(newName);
   };
 
   const handleNumber = (event) => {
     setNewNumber(event.target.value);
-    console.log(newNumber);
   };
 
   const preventSubmission = (event) => {
     event.preventDefault();
   };
 
-  const newContactObject = { name: newName, number: newNumber }
+  const newContactObject = { name: newName, number: newNumber };
+  // function to get the id if the contact already exists
+  let findIndex = persons.findIndex((person) => {
+    if (person.name === newName) {
+      return person
+    }
+  });
 
-  // alert if name is already added otherwise add the contact
+  const personID = () => {
+    return findIndex + 1
+  }
+  console.log(personID())
+
+  // If contact exists, update the number otherwise add the contact
   const addNameToPersons = () => {
-    if (persons.some((person) => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`);
+    if (
+      persons.some(
+        (person) => person.name === newName
+      )
+    ) {
+      if (
+        window.confirm(
+          `${newName} is already added to phonebook, replace the old number with a new one`
+        )
+      ) {
+        contactService
+          .update(personID() , newContactObject)
+          // .then(window.location.reload(true));
+          .then(window.location.reload(true))
+      }
     } else {
-      // setPersons([...persons, { name: newName, number: newNumber }]);
       contactService
         .create(newContactObject)
-        .then(returnedPersons => setPersons(persons.concat(returnedPersons)))
+        .then((returnedPersons) => setPersons(persons.concat(returnedPersons)));
     }
   };
 
@@ -51,6 +73,7 @@ const App = () => {
     }
   };
 
+  // filter person with name
   const showFiltered = persons.filter((person) => person.name === search);
 
   return (
@@ -74,10 +97,7 @@ const App = () => {
       />
 
       <h3>Numbers</h3>
-      <Persons 
-        persons={persons}
-      />
-
+      <Persons persons={persons} />
     </div>
   );
 };
