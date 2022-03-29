@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import contactService from "../services/contact";
 
 // Component to display/delete contacts
