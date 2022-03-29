@@ -7,7 +7,7 @@ import contactService from "./services/contact";
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
-  const [newNumber, setNewNumber] = useState(0);
+  const [newNumber, setNewNumber] = useState("");
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
 
@@ -30,34 +30,29 @@ const App = () => {
   };
 
   const newContactObject = { name: newName, number: newNumber };
-  // function to get the id if the contact already exists
+  // function to get the index if the contact already exists
   let findIndex = persons.findIndex((person) => {
     if (person.name === newName) {
-      return person
+      return person;
     }
   });
 
   const personID = () => {
-    return findIndex + 1
-  }
-  console.log(personID())
+    return findIndex + 1;
+  };
+  console.log(personID());
 
   // If contact exists, update the number otherwise add the contact
   const addNameToPersons = () => {
-    if (
-      persons.some(
-        (person) => person.name === newName
-      )
-    ) {
+    if (persons.some((person) => person.name === newName)) {
       if (
         window.confirm(
           `${newName} is already added to phonebook, replace the old number with a new one`
         )
       ) {
         contactService
-          .update(personID() , newContactObject)
-          // .then(window.location.reload(true));
-          .then(window.location.reload(true))
+          .update(personID(), newContactObject)
+          .then(window.location.reload(true));
       }
     } else {
       contactService
