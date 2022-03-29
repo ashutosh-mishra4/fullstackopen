@@ -7,7 +7,7 @@ function Persons({ persons }) {
   // Delete contact from database after confirmation
   const removeContact = (id, name) => {
     if (window.confirm(`Delete ${name}`)) {
-      contactService.remove(id).then(window.location.reload(true));
+      contactService.remove(id).then(() => window.location.reload(true));
     }
   };
 

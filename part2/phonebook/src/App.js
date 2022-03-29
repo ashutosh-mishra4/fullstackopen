@@ -39,7 +39,7 @@ const App = () => {
 
   const personID = () => {
     return findIndex + 1;
-  };
+  }; 
   console.log(personID());
 
   // If contact exists, update the number otherwise add the contact
@@ -52,7 +52,7 @@ const App = () => {
       ) {
         contactService
           .update(personID(), newContactObject)
-          .then(window.location.reload(true));
+          .then(() => window.location.reload(true));
       }
     } else {
       contactService
