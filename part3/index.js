@@ -54,10 +54,37 @@ app.delete("/api/persons/:id", (request, response) => {
   response.status(204).end();
 });
 
+const generateID = () => {
+  const id =
+    persons.length > 0 
+      ? Math.floor(Math.random() * (1000 - 5 + 1) + 5)
+      : 0;
+    return id
+};
+
 app.post("/api/persons", (request, response) => {
-  const newPerson = request.body;
-  console.log(newPerson);
-  response.json(newPerson);
+  const body = request.body;
+
+  if(!body.name || !body.number) {
+    return response.status(400).json({
+      error: 'You have missed the name or number'
+    })
+  }
+
+  if(persons.map((person) => person.name === body.name)) {
+    return response.statusMessage(400).json({
+      error: "name must be unique"
+    })
+  }
+
+  const person = {
+    name: body.name,
+    number: body.number,
+    id: generateID()
+  }
+
+  persons = persons.concat(person)
+  response.json(persons);
 });
 
 const PORT = 3001;
