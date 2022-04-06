@@ -54,16 +54,16 @@ app.delete("/api/persons/:id", (request, response) => {
   response.status(204).end();
 });
 
+// function to generate random ID for post requests
 const generateID = () => {
-  const id =
-    persons.length > 0 
-      ? Math.floor(Math.random() * (1000 - 5 + 1) + 5)
-      : 0;
-    return id
+  const id = Math.floor(Math.random() * (1000 - 5 + 1) + 5)
+  return id
 };
 
 app.post("/api/persons", (request, response) => {
+  
   const body = request.body;
+  body.id = generateID()
 
   if(!body.name || !body.number) {
     return response.status(400).json({
@@ -71,20 +71,14 @@ app.post("/api/persons", (request, response) => {
     })
   }
 
-  if(persons.map((person) => person.name === body.name)) {
-    return response.statusMessage(400).json({
+  if(persons.find(person => person.name === body.name)) {
+    return response.status(400).json({
       error: "name must be unique"
     })
   }
 
-  const person = {
-    name: body.name,
-    number: body.number,
-    id: generateID()
-  }
-
-  persons = persons.concat(person)
-  response.json(persons);
+  persons = persons.concat(body)
+  response.json(body);
 });
 
 const PORT = 3001;
