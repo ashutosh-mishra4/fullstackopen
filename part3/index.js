@@ -1,9 +1,12 @@
 const express = require("express");
-const morgan = require("morgan")
+const morgan = require("morgan");
 const app = express();
 
-app.use(morgan('tiny'));
-app.use(express.json())
+app.use(morgan("tiny"));
+app.use(
+  morgan(":method :url :status :res[content-length] :response-time ms :body")
+);
+app.use(express.json());
 
 let persons = [
   {
@@ -57,32 +60,33 @@ app.delete("/api/persons/:id", (request, response) => {
   response.status(204).end();
 });
 
-// function to generate random ID for post requests
+// random id number needed to assign to post requests body
 const generateID = () => {
-  const id = Math.floor(Math.random() * (1000 - 5 + 1) + 5)
-  return id
+  const id = Math.floor(Math.random() * (1000 - 5 + 1) + 5);
+  return id;
 };
 
 app.post("/api/persons", (request, response) => {
-  
   const body = request.body;
-  body.id = generateID()
+  body.id = generateID();
 
-  if(!body.name || !body.number) {
+  if (!body.name || !body.number) {
     return response.status(400).json({
-      error: 'You have missed the name or number'
-    })
+      error: "You have missed the name or number",
+    });
   }
 
-  if(persons.find(person => person.name === body.name)) {
+  if (persons.find((person) => person.name === body.name)) {
     return response.status(400).json({
-      error: "name must be unique"
-    })
+      error: "name must be unique",
+    });
   }
 
-  persons = persons.concat(body)
+  persons = persons.concat(body);
   response.json(body);
 });
+
+morgan.token("body", (req, res) => JSON.stringify(req.body));
 
 const PORT = 3001;
 app.listen(PORT, () => {
