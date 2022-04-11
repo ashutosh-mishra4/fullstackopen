@@ -92,5 +92,5 @@ morgan.token("body", (req, res) => JSON.stringify(req.body));
 
 const port = process.env.PORT || 3001;
 app.listen(port, () => {
-  console.log(`Port running on server ${PORT}`);
+  console.log(`Port running on server ${port}`);
 });
