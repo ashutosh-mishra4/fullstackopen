@@ -90,7 +90,7 @@ app.post("/api/persons", (request, response) => {
 
 morgan.token("body", (req, res) => JSON.stringify(req.body));
 
-const PORT = 3001;
-app.listen(PORT, () => {
+const port = process.env.PORT || 3001;
+app.listen(port, () => {
   console.log(`Port running on server ${PORT}`);
 });
