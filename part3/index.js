@@ -1,7 +1,9 @@
+require('dotenv').config()
 const express = require("express");
 const morgan = require("morgan");
 const cors = require('cors')
 const app = express();
+const Person = require('./models/person')
 
 app.use(cors())
 app.use(express.static('build'))
@@ -35,7 +37,9 @@ let persons = [
 ];
 
 app.get("/api/persons", (request, response) => {
-  response.json(persons);
+  Person.find({}).then(persons => {
+    response.json(persons)
+  })
 });
 
 app.get("/info", (request, response) => {
@@ -58,7 +62,7 @@ app.get("/api/persons/:id", (request, response) => {
 
 app.delete("/api/persons/:id", (request, response) => {
   const id = Number(request.params.id);
-  persons = persons.filter((person) => person.id !== id);
+  Person = Person.filter((person) => person.id !== id);
 
   response.status(204).end();
 });
@@ -79,19 +83,26 @@ app.post("/api/persons", (request, response) => {
     });
   }
 
-  if (persons.find((person) => person.name === body.name)) {
-    return response.status(400).json({
-      error: "name must be unique",
-    });
-  }
+  const person = new Person({
+    // id: generateID(),
+    name: body.name,
+    number: body.number
+  })
 
-  persons = persons.concat(body);
-  response.json(body);
+  // if (persons.find((person) => person.name === body.name)) {
+  //   return response.status(400).json({
+  //     error: "name must be unique",
+  //   });
+  // }
+
+  person.save().then(savedPerson => {
+    response.json(savedPerson)
+  })
 });
 
 morgan.token("body", (req, res) => JSON.stringify(req.body));
 
-const port = process.env.PORT || 3001;
+const port = process.env.PORT;
 app.listen(port, () => {
   console.log(`Port running on server ${port}`);
 });
