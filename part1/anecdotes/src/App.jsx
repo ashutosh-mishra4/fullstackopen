@@ -4,6 +4,13 @@ const Button = ({ onClick, text }) => {
   return <button onClick={onClick}>{text}</button>;
 };
 
+const Anecdotes = ({ header, value }) => (
+  <>
+    <h1>{header}</h1>
+    <p>{value}</p>
+  </>
+);
+
 const App = () => {
   const anecdotes = [
     "If it hurts, do it more often.",
@@ -30,12 +37,20 @@ const App = () => {
     setVotes(newVotes);
   };
 
+  const highestVotes = Math.max(...votes);
+  const highestVotesIndex = votes.indexOf(highestVotes);
+
   return (
     <>
-      <div>{anecdotes[selected]}</div>
+      <Anecdotes header="Anecdote of the day" value={anecdotes[selected]} />
       <p>has {votes[selected]} votes</p>
       <Button onClick={handleVotes} text="vote" />
       <Button onClick={selectRandomAnecdote} text="next anecdote" />
+      <Anecdotes
+        header="Anecdote of the day"
+        value={anecdotes[highestVotesIndex]}
+      />
+      <p>has {highestVotes} votes</p>
     </>
   );
 };
