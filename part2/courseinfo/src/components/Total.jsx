@@ -1,13 +1,10 @@
 const Total = ({ exercises }) => {
+  const exerciseCount = () => {
+    return exercises.parts.reduce((acc, curr) => acc + curr.exercises, 0);
+  };
+
   return (
-    <p style={{ fontWeight: "bold" }}>
-      total of{" "}
-      {exercises.parts[0].exercises +
-        exercises.parts[1].exercises +
-        exercises.parts[2].exercises +
-        exercises.parts[3].exercises}{" "}
-      exercises
-    </p>
+    <p style={{ fontWeight: "bold" }}>total of {exerciseCount()} exercises</p>
   );
 };
 
